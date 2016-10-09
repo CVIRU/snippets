@@ -9,7 +9,7 @@ require(data.table)
 set.seed(100)
 
 # Number of subjects
-n <- 100
+n <- 500
 # Phenotype
 dummy <- data.table(ID = 1:n,
                     Birthday = sample(seq(as.Date("1925/01/01"), 
@@ -40,10 +40,18 @@ dx <- data.table(ID = sample(dummy$ID,
                                    by = "day"), 
                                size = nrec*n,
                                replace = TRUE),
-                 DiagMain = sample(0:1,
-                                   size = nrec*n,
-                                   replace = TRUE,
-                                   prob = c(0.7, 0.3)),
+                 CondA = sample(0:1,
+                                size = nrec*n,
+                                replace = TRUE,
+                                prob = c(0.7, 0.3)),
+                 CondB = sample(0:1,
+                                size = nrec*n,
+                                replace = TRUE,
+                                prob = c(0.9, 0.1)),
+                 Diag1 = sample(0:1,
+                                size = nrec*n,
+                                replace = TRUE,
+                                prob = c(0.8, 0.2)),
                  Diag2 = sample(0:1,
                                 size = nrec*n,
                                 replace = TRUE,
@@ -62,6 +70,10 @@ dx <- data.table(ID = sample(dummy$ID,
                                 prob = c(0.6, 0.4)))
 setkey(dx, ID)
 
+# Set 70% of subjects 'case-free'
+dx$CondA[dx$ID %in% sample(dummy$ID, floor(0.7*n))] <- 0
+
+# Merge data sets
 match.data <- merge(dummy, dx, by = "ID")
 summary(match.data )
 
