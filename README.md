@@ -3,4 +3,4 @@
 ## Created: 10/01/2016 
 
 ## Example1: plot3d.R
-![Alt text](tmp/movie1.gif?raw=true "Title")
+![Alt text](media/movie1.gif?raw=true "Title")
