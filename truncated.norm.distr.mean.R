@@ -1,4 +1,4 @@
-# Code: Lineplot with Error Bars
+# Code: Means of truncated normal distribution
 # Created: 11/23/2016
 # Author: Davit Sargsyan
 # Source:
