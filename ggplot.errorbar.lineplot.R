@@ -1,24 +1,24 @@
-# Code: Lineplot with Error Bars
-# Created: 09/16/2016
-# Author: Davit Sargsyan
-
+# Code: Lineplot with Error Bars   
+# Authors: Davit Sargsyan
+# Created:  09/16/2016
+#**********************************************************
 require(data.table)
 require(ggplot2)
 
-# Data
-dt <- data.table(x = rep(1:5, each = 20),
+# Data----
+dt1 <- data.table(x = rep(1:5, each = 20),
                  y = rnorm(100),
                  z = rep(c("A", "B"), 10))
 
-# Example1: Single factor
+# Example1: Single factor----
 # Compute means and standard deviations
-dt[, mu := mean(y),
+dt1[, mu := mean(y),
    by = x]
-dt[, std := sd(y),
+dt1[, std := sd(y),
    by = x]
-d1 <- unique(subset(dt, select = -2))
+d1 <- unique(subset(dt1, select = -2))
 
-# Plot means and error bars
+# Plot means and error bars----
 ggplot(d1, 
        aes(x = x, 
            y = mu)) + 
@@ -29,13 +29,13 @@ ggplot(d1,
                 colour = "black", 
                 width = .1) 
 
-# Example 2: two factors
+# Example 2: two factors----
 # By x and z
-dt[, mu := mean(y),
+dt1[, mu := mean(y),
    by = list(x, z)]
-dt[, std := sd(y),
+dt1[, std := sd(y),
    by = list(x, z)]
-d1 <- unique(subset(dt, select = -c(2)))
+d1 <- unique(subset(dt1, select = -c(2)))
 
 ggplot(d1,
        aes(x = x,

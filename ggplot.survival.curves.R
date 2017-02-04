@@ -1,0 +1,115 @@
+# Code: Survival Curves  
+# Authors: Davit Sargsyan, Javier Cabrera
+# Created:  02/04/2017
+#**********************************************************
+require(data.table)
+require(survival)
+require(ggplot2)
+
+# Data----
+# Setumber of observations
+n <- 400
+
+# Set maximum number of days and days to censoring
+max.days <- 5000
+cens.days <- 3000
+
+dt1 <- data.table(days2death = round(runif(n, 0, max.days)*rexp(n)), 
+                  death = 0,
+                  grp1 = factor(sample(x = c("A", "B"),
+                                       size = n,
+                                       replace = TRUE),
+                                levels = c("A", "B")),
+                  grp2 = factor(sample(x = c("Left", "Right"),
+                                       size = n,
+                                       replace = TRUE),
+                                levels = c("Left", "Right")))
+# Censor to 3000 days
+dt1$death[dt1$days2death <= cens.days] <- 1
+
+# OPTIONAL: don't plot beyond censoring
+# If this is omitted, the curves wil extend further
+# to the right but will be flat between censoring date 
+# and the largest number of days
+dt1$days2death[dt1$days2death > cens.days] <- cens.days + 1
+
+summary(dt1)
+
+# Model: Cox Regression
+m1 <- coxph(Surv(days2death, (death == 1)) ~ grp1 + grp2,
+            data = dt1)
+summary(m1)
+
+# Predict risks for each combination
+predict(m1,
+        newdata = list(grp1 = c("A", "A", "B", "B"),
+                       grp2 = c("Left", "Right", "Left", "Right")),
+        type = "risk")
+
+# WHAT IS THIS?
+predict(m1,
+        newdata = list(grp1 = "A",
+                       grp2 = "Left",
+                       days2death = 3000,
+                       death = 1),
+        type = "expected")
+
+# Generic survival curves
+plot(survfit(m1),
+     mark.time = FALSE,
+     xlab = "Days",
+     ylab = "Survival")
+
+# Create a Survival Fit object
+sf1 <- survfit(Surv(days2death, (death == 1)) ~ grp1 + grp2,
+               data = dt1)
+
+# Extract data from the fit 
+dt.surv <- data.table(Time = sf1$time,
+                      HR = sf1$surv,
+                      Group = rep(names(sf1$strata),
+                                  sf1$strata))
+# Plot----
+ggplot(dt.surv,
+       aes(x = Time,
+           y = HR,
+           colour = Group,
+           group = Group)) +
+  geom_step() +
+  scale_colour_manual(values = c("green",
+                                 "black",
+                                 "red",
+                                 "blue")) +
+  theme(axis.text.x = element_text(angle = 45,
+                                   hjust = 1)) +
+  scale_x_continuous("Years",
+                     breaks = c(0:17)*365.25,
+                     labels = 0:17) +
+  scale_y_continuous("Survival",
+                     limits = c(0, 1)) +
+  ggtitle("Survival Curves") +
+  guides(fill = guide_legend(title = "Group",
+                             title.position = "top",
+                             nrow = 1))
+
+# Compute and plot logit----
+dt.surv[, Logit := log(HR/(1 - HR))]
+
+ggplot(dt.surv,
+       aes(x = Time,
+           y = Logit,
+           colour = Group,
+           group = Group)) +
+  geom_step() +
+  scale_colour_manual(values = c("green",
+                                 "black",
+                                 "red",
+                                 "blue")) +
+  scale_x_continuous("Years",
+                     breaks = c(0:17)*365.25,
+                     labels = 0:17) +
+  scale_y_continuous("Logit of Survival") +
+  ggtitle("Logit") +
+  guides(fill = guide_legend(title = "Group",
+                             title.position = "top",
+                             nrow = 1))
