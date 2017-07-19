@@ -1,7 +1,7 @@
-# Snippets: 3D boxis and crosses
-# Author: Davit Sargsyan
+# Code: 3D Rotating Boxes and Crosses 
+# Authors: Davit Sargsyan
 # Created: 10/28/2016
-################################################
+#**********************************************************
 require(data.table)
 require(rgl)
 

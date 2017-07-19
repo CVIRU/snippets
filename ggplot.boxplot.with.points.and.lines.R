@@ -1,27 +1,27 @@
-# Snippets: ggplot boxplot with points and lines
-# Author: Davit Sargsyan
-# Created: 10/17/2016
-################################################
+# Code: Boxplot with Points and Lines  
+# Authors: Davit Sargsyan
+# Created:  09/16/2016
+#**********************************************************
 require(data.table)
 require(ggplot2)
 
-# Dummy data
+# Data----
 n.animal <- 7
 n.trt <- 5
 n.read <- 2
 
-d1 <- data.table(read = factor(paste("Reading",
-                                     rep(1:n.read, 
-                                         each = n.animal*n.trt),
-                                     sep = "")),
-                 trt = factor(rep(rep(LETTERS[1:n.trt],
-                                      each = n.animal),
-                                  n.read)),
-                 id = factor(rep(1:n.animal, n.read*n.trt)),
-                 readout = rnorm(n.animal*n.trt*n.read))
+dt1 <- data.table(read = factor(paste("Reading",
+                                      rep(1:n.read, 
+                                          each = n.animal*n.trt),
+                                      sep = "")),
+                  trt = factor(rep(rep(LETTERS[1:n.trt],
+                                       each = n.animal),
+                                   n.read)),
+                  id = factor(rep(1:n.animal, n.read*n.trt)),
+                  readout = rnorm(n.animal*n.trt*n.read))
 
-# Plot
-ggplot(data = d1) +
+# Plot----
+ggplot(data = dt1) +
   scale_x_discrete("Treatment") + 
   scale_y_continuous("Readout") + 
   ggtitle("Title") +
