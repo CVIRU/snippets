@@ -4,7 +4,7 @@ author: Davit Sargsyan
 date: 08/12/2017
 output: html_notebook
 ---
-These are examples of creating heatmaps with ***ggplot2*** package. For more examples on constructing heatmaps, see my answer on Stack Overflow [my answer on Stack Overflow](https://stackoverflow.com/questions/34301152/creating-heatmap-graph-in-r/34302517#34302517)
+These are examples of creating heatmaps with *ggplot2* package. For more examples on constructing heatmaps, see my answer on Stack Overflow [my answer on Stack Overflow](https://stackoverflow.com/questions/34301152/creating-heatmap-graph-in-r/34302517#34302517)
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 # Load packages----
@@ -54,16 +54,6 @@ p1 <- ggplot(data = dt1) +
         plot.title = element_text(hjust = 0.5))
 print(p1)
 
-# Save the plot as a TIFF file
-# tiff(filename = "tmp/heatmap.tiff",
-#      height = 10,
-#      width = 8,
-#      units = 'in',
-#      res = 300,
-#      compression = "lzw+p")
-# print(p1)
-# graphics.off()
-
 # Plot heatmap with grouping variable----
 p2 <- ggplot(data = dt1) +
   facet_wrap(~ grpVar,
@@ -88,4 +78,14 @@ p2 <- ggplot(data = dt1) +
         # legend.position = "top",
         plot.title = element_text(hjust = 0.5))
 print(p2)
+
+# Save the plot as a TIFF file
+# tiff(filename = "tmp/heatmap.tiff",
+#      height = 10,
+#      width = 8,
+#      units = 'in',
+#      res = 300,
+#      compression = "lzw+p")
+# print(p1)
+# graphics.off()
 ```

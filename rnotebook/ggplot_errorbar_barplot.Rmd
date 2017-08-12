@@ -1,0 +1,66 @@
+---
+title: "Barplot with Error Bars Using Ggplot2 Package"
+author: Davit Sargsyan
+date: 08/12/2017
+output: html_notebook
+---
+
+This is an example of using *ggplot2* to draw barplot with error bars. Source: [http://www.cookbook-r.com/Graphs/Axes_(ggplot2)/](http://www.cookbook-r.com/Graphs/Axes_(ggplot2)/)
+
+```{r, echo=TRUE, fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
+# Load packages----
+require(data.table)
+require(ggplot2)
+
+# Data----
+dt1 <- data.table(x = rep(1:5, each = 20),
+                  y = abs(rnorm(100)),
+                  z = rep(c("A", "B"), 10))
+
+# Summary by x and z
+dt1[, mu := mean(y),
+    by = list(x, z)]
+dt1[, std := sd(y),
+    by = list(x, z)]
+d1 <- unique(subset(dt1, select = -c(2)))
+
+# Plot----
+p1 <- ggplot(d1,
+             aes(x = x,
+                 y = mu,
+                 fill = z)) +
+  facet_wrap(~ z,
+             nrow = 1) +
+  geom_errorbar(aes(ymax = mu + std,
+                    ymin = mu),
+                width =.2,
+                position = position_dodge(.9)) +
+  geom_point(position = position_dodge(0.9),
+             size = 3) +
+  geom_bar(position = position_dodge(),
+           stat="identity") +
+  scale_x_continuous("X Variable",
+                     breaks = 1:5,
+                     labels = paste("Group", 
+                                    unique(d1$x))) +
+  scale_y_continuous("Group Averages") +
+  ggtitle("Title") +
+  guides(fill = guide_legend(title = "Subgroups",
+                             title.position = "top",
+                             nrow = 1)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.position = "top",
+        axis.text.x = element_text(angle = 45,
+                                   hjust = 1))
+print(p1)
+
+# Save the plot as a TIFF file
+# tiff(filename = "tmp/barplot.tiff",
+#      height = 5,
+#      width = 5,
+#      units = 'in',
+#      res = 300,
+#      compression = "lzw+p")
+# print(p1)
+# graphics.off()
+```

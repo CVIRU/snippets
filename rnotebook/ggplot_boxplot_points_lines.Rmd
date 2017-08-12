@@ -5,7 +5,7 @@ date: 08/12/2017
 output: html_notebook
 ---
 
-This is an example of using ***ggplot2*** to draw boxplots with points and lines.
+This is an example of using *ggplot2* to draw boxplots with points and lines.
 
 ```{r, echo=TRUE, fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
 # Load packages----
