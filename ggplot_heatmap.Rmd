@@ -1,0 +1,90 @@
+---
+title: "Heatmap Using Ggplot2 Package"
+output: html_notebook
+---
+
+For more examples on constructing heatmaps, see my answer on Stack Overflow [my answer on Stack Overflow](https://stackoverflow.com/questions/34301152/creating-heatmap-graph-in-r/34302517#34302517)
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+# Load packages----
+require(data.table)
+require(ggplot2)
+
+set.seed(100)
+
+# Crate a data set----
+n.row <- 10
+n.col <- 8
+n.grp <- 2
+
+dt1 <- data.table(rowVar = factor(paste("Row",
+                                        rep(LETTERS[1:n.row],
+                                            n.col))),
+                  colVar = factor(paste("Column",
+                                        rep(rev(LETTERS[1:n.col]),
+                                            each = n.row))),
+                  grpVar = factor(paste("Group",
+                                        sample(1:2,
+                                               n.row*n.col,
+                                               replace = TRUE))),
+                  valVar = rnorm(n.row*n.col))
+print(dt1)
+
+# Plot heatmap----
+p1 <- ggplot(data = dt1) +
+  geom_tile(aes(x =  colVar,
+                y = rowVar,
+                fill = valVar),
+            color = "black") +
+  scale_fill_gradient2(low = "red", 
+                       high = "green", 
+                       mid = "black", 
+                       midpoint = 0, 
+                       # limit = c(-10, 10), 
+                       name = "Magnitude") +
+  scale_x_discrete("Column Variable",
+                   expand = c(0, 0)) + 
+  scale_y_discrete("Row Variable",
+                   expand = c(0, 0)) +
+  ggtitle("Heatmap") +
+  theme(axis.text.x = element_text(angle = 20,
+                                   hjust = 1),
+        # legend.position = "top",
+        plot.title = element_text(hjust = 0.5))
+print(p1)
+
+# Save the plot as a TIFF file
+# tiff(filename = "tmp/heatmap.tiff",
+#      height = 10,
+#      width = 8,
+#      units = 'in',
+#      res = 300,
+#      compression = "lzw+p")
+# print(p1)
+# graphics.off()
+
+# Plot heatmap with grouping variable----
+p2 <- ggplot(data = dt1) +
+  facet_wrap(~ grpVar,
+             scales = "free_y") +
+  geom_tile(aes(x =  colVar,
+                y = rowVar,
+                fill = valVar),
+            color = "black") +
+  scale_fill_gradient2(low = "red", 
+                       high = "green", 
+                       mid = "black", 
+                       midpoint = 0, 
+                       # limit = c(-10, 10), 
+                       name = "Magnitude") +
+  scale_x_discrete("Column Variable",
+                   expand = c(0, 0)) + 
+  scale_y_discrete("Row Variable",
+                   expand = c(0, 0)) +
+  ggtitle("Heatmap") + 
+  theme(axis.text.x = element_text(angle = 20,
+                                   hjust = 1),
+        # legend.position = "top",
+        plot.title = element_text(hjust = 0.5))
+print(p2)
+```
