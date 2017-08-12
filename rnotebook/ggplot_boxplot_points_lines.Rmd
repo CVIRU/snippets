@@ -1,0 +1,74 @@
+---
+title: "Boxplot With Points And Lines Using Ggplot2 Package"
+author: Davit Sargsyan
+date: 08/12/2017
+output: html_notebook
+---
+
+This is an example of using ***ggplot2*** to draw boxplots with points and lines.
+
+```{r, echo=TRUE, fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
+# Load packages----
+require(data.table)
+require(ggplot2)
+
+# Data----
+n.animal <- 7
+n.trt <- 5
+n.read <- 2
+
+dt1 <- data.table(read = factor(paste("Reading",
+                                      rep(1:n.read, 
+                                          each = n.animal*n.trt),
+                                      sep = "")),
+                  trt = factor(paste("Treatment", 
+                                     rep(rep(LETTERS[1:n.trt],
+                                             each = n.animal),
+                                         n.read))),
+                  id = factor(paste("Animal",
+                                    rep(1:n.animal, n.read*n.trt))),
+                  readout = rnorm(n.animal*n.trt*n.read))
+print(dt1)
+
+# Plot----
+p1 <- ggplot(data = dt1) +
+  scale_x_discrete("Treatment") + 
+  scale_y_continuous("Readout") + 
+  ggtitle("Boxplot") +
+  facet_wrap(~ read,
+             nrow = 1) +
+  geom_boxplot(aes(x = trt,
+                   y = readout)) +
+  geom_point(aes(x = trt,
+                 y = readout,
+                 group = id,
+                 colour = id),
+             size = 3,
+             alpha = 0.6,
+             position = position_dodge(0.3)) + 
+  geom_line(aes(x = trt,
+                y = readout,
+                group = id,
+                colour = id),
+            size = 2,
+            alpha = 0.6,
+            position = position_dodge(0.3)) + 
+  guides(colour = guide_legend(title = "ID",
+                               title.position = "top",
+                               ncol = 1)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.position = "left",
+        axis.text.x = element_text(angle = 45,
+                                   hjust = 1))
+print(p1)
+
+# Save the plot as a TIFF file
+# tiff(filename = "tmp/boxplot.tiff",
+#      height = 5,
+#      width = 10,
+#      units = 'in',
+#      res = 300,
+#      compression = "lzw+p")
+# print(p1)
+# graphics.off()
+```

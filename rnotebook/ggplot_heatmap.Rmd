@@ -1,9 +1,10 @@
 ---
 title: "Heatmap Using Ggplot2 Package"
+author: Davit Sargsyan
+date: 08/12/2017
 output: html_notebook
 ---
-
-For more examples on constructing heatmaps, see my answer on Stack Overflow [my answer on Stack Overflow](https://stackoverflow.com/questions/34301152/creating-heatmap-graph-in-r/34302517#34302517)
+These are examples of creating heatmaps with ***ggplot2*** package. For more examples on constructing heatmaps, see my answer on Stack Overflow [my answer on Stack Overflow](https://stackoverflow.com/questions/34301152/creating-heatmap-graph-in-r/34302517#34302517)
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 # Load packages----
@@ -12,7 +13,7 @@ require(ggplot2)
 
 set.seed(100)
 
-# Crate a data set----
+# Data----
 n.row <- 10
 n.col <- 8
 n.grp <- 2
