@@ -1,9 +1,10 @@
-# Code: Means of truncated normal distribution
-# Created: 11/23/2016
-# Author: Davit Sargsyan
-# Source:
-# https://assessingpsyche.wordpress.com/2014/06/04/using-the-truncated-normal-distribution/
-#*****************************************************************************************
+# |-----------------------------------------------------------------------------------------------------|
+# | Project: Means of truncated normal distributions                                                    |
+# | Script:  Means of truncated normal distributions                                                    |
+# | Author:  Davit Sargsyan                                                                             | 
+# | Created: 11/23/2016                                                                                 |
+# | Source:  https://assessingpsyche.wordpress.com/2014/06/04/using-the-truncated-normal-distribution/  |
+# |-----------------------------------------------------------------------------------------------------|
 # Data simulation is based on reported values from:
 # "Efficacy and safety of alirocumab in reducing lipids and cardiovascular events", 
 # Robinson et al, The New England Journal of Medicine, April 2015
@@ -28,7 +29,6 @@ MeanNormalTruncated <- function(mu = 0,
     (pnorm((b - mu)/sigma) - pnorm((a - mu)/sigma))
 }
 
-#*****************************************************************************************
 # Calculate and plot expected values for given threshods----
 # th <- 15
 th <- 25

@@ -1,7 +1,12 @@
-# Code: 3D Rotating Boxes and Crosses 
-# Authors: Davit Sargsyan
-# Created: 10/28/2016
-#**********************************************************
+---
+title: "3D Rotating Boxes and Crosses"
+author: Davit Sargsyan
+date: 10/28/2016
+output: html_notebook
+---
+
+```{r, echo=TRUE, fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
+# Load packages----
 require(data.table)
 require(rgl)
 
@@ -127,9 +132,8 @@ boxes3d(v1.est, v1.lb, v1.ub,
         v3.est, v3.lb, v3.ub,
         point.names = rownames(d1))
 
-
-play3d(spin3d(rpm = 6,
-              axis = c(0.6, 0.6, 0.6)))
+# play3d(spin3d(rpm = 6,
+#               axis = c(0.6, 0.6, 0.6)))
 
 # Install ImageMagick
 # NOTE: version ImageMagick-7.0.3-4.x86_64.rpm (and possibly some earlier versions) do not install convert.exe by default;
@@ -146,3 +150,4 @@ play3d(spin3d(rpm = 6,
 #         dir = paste(getwd(),
 #                     "tmp",
 #                     sep = "/"))
+```

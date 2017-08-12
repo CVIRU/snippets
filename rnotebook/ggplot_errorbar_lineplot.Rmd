@@ -1,47 +1,53 @@
-# Code: Lineplot with Error Bars   
-# Authors: Davit Sargsyan
-# Created:  09/16/2016
-#**********************************************************
+---
+title: "Lineplot With Error Bars Using Ggplot2 Package"
+author: Davit Sargsyan
+date: 09/16/2016
+output: html_notebook
+---
+
+```{r, echo=TRUE, fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
+# Load packages----
 require(data.table)
 require(ggplot2)
 
 # Data----
 dt1 <- data.table(x = rep(1:5, each = 20),
-                 y = rnorm(100),
-                 z = rep(c("A", "B"), 10))
+                  y = rnorm(100),
+                  z = rep(c("A", "B"), 10))
 
 # Example1: Single factor----
 # Compute means and standard deviations
 dt1[, mu := mean(y),
-   by = x]
+    by = x]
 dt1[, std := sd(y),
-   by = x]
+    by = x]
 d1 <- unique(subset(dt1, select = -2))
 
 # Plot means and error bars----
-ggplot(d1, 
-       aes(x = x, 
-           y = mu)) + 
+p1 <- ggplot(d1, 
+             aes(x = x, 
+                 y = mu)) + 
   geom_line() +
   geom_point(size = 3) +
   geom_errorbar(aes(ymin = mu - std, 
                     ymax = mu + std),
                 colour = "black", 
                 width = .1) 
+plot(p1)
 
 # Example 2: two factors----
 # By x and z
 dt1[, mu := mean(y),
-   by = list(x, z)]
+    by = list(x, z)]
 dt1[, std := sd(y),
-   by = list(x, z)]
+    by = list(x, z)]
 d1 <- unique(subset(dt1, select = -c(2)))
 
-ggplot(d1,
-       aes(x = x,
-           y = mu,
-           colour = z,
-           group = z)) +
+p2 <- ggplot(d1,
+             aes(x = x,
+                 y = mu,
+                 colour = z,
+                 group = z)) +
   facet_wrap(~ z,
              ncol = 1) +
   geom_line(position = position_dodge(0.3),
@@ -62,3 +68,15 @@ ggplot(d1,
   guides(fill = guide_legend(title = "Treatment",
                              title.position = "top",
                              nrow = 1))
+plot(p2)
+
+# Save the plot as a TIFF file
+# tiff(filename = "tmp/boxplot.tiff",
+#      height = 5,
+#      width = 5,
+#      units = 'in',
+#      res = 300,
+#      compression = "lzw+p")
+# print(p2)
+# graphics.off()
+```

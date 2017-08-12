@@ -1,7 +1,14 @@
-# Code: Survival Curves  
-# Authors: Davit Sargsyan, Javier Cabrera
-# Created:  02/04/2017
-#**********************************************************
+---
+title: "Survival Curves Using Ggplot2 Package"
+author: Davit Sargsyan, Javier Cabrera
+date: 02/04/2017
+output: html_notebook
+---
+
+This is an example of using *ggplot2* to draw survival curves.
+
+```{r, echo=TRUE, fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
+# Load packages----
 require(data.table)
 require(survival)
 require(ggplot2)
@@ -113,3 +120,4 @@ ggplot(dt.surv,
   guides(fill = guide_legend(title = "Group",
                              title.position = "top",
                              nrow = 1))
+```
