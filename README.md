@@ -12,5 +12,5 @@
 4. [Lineplot wih error bars](http://htmlpreview.github.com/?https://github.com/sargdavid/snippets.cvi/blob/master/rnotebook/ggplot_errorbar_lineplot.nb.html)    
 5. [Survival curves](http://htmlpreview.github.com/?https://github.com/sargdavid/snippets.cvi/blob/master/rnotebook/ggplot_survival_curves.nb.html)    
 
-### [Example of a 3D rotating plot](http://htmlpreview.github.com/?https://github.com/sargdavid/snippets.cvi/blob/master/rnotebook/ggplot_survival_curves.nb.html)    
+### b. Example of a [3D rotating plot](http://htmlpreview.github.com/?https://github.com/sargdavid/snippets.cvi/blob/master/rnotebook/plots3d.nb.html)    
 ![Alt text](media/movie1.gif?raw=true "Title")
