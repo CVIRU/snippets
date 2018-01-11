@@ -1,74 +1,70 @@
 ---
 title: "Lineplot With Error Bars Using Ggplot2 Package"
 author: Davit Sargsyan
-date: 09/16/2016
+date: 01/05/2018
 output: html_notebook
 ---
 
 ```{r, echo=TRUE, fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
 # Load packages----
+# Testcode
 require(data.table)
 require(ggplot2)
 
 # Data----
-dt1 <- data.table(x = rep(1:5, each = 20),
-                  y = rnorm(100),
-                  z = rep(c("A", "B"), 10))
+dt1 <- data.table(x = rep(1:5,
+                          each = 20),
+                  y = abs(rnorm(100)),
+                  z = rep(LETTERS[1:4],
+                          25),
+                  grp = factor(rep(rep(c("Left",
+                                         "Right"),
+                                       each = 10),
+                                   5)))
 
-# Example1: Single factor----
-# Compute means and standard deviations
+# Summary by x and z
 dt1[, mu := mean(y),
-    by = x]
+    by = list(x, z, grp)]
 dt1[, std := sd(y),
-    by = x]
-d1 <- unique(subset(dt1, select = -2))
+    by = list(x, z, grp)]
+dt1 <- unique(subset(dt1, select = -c(2)))
+dt1
 
-# Plot means and error bars----
-p1 <- ggplot(d1, 
-             aes(x = x, 
-                 y = mu)) + 
-  geom_line() +
-  geom_point(size = 3) +
-  geom_errorbar(aes(ymin = mu - std, 
-                    ymax = mu + std),
-                colour = "black", 
-                width = .1) 
-plot(p1)
-
-# Example 2: two factors----
-# By x and z
-dt1[, mu := mean(y),
-    by = list(x, z)]
-dt1[, std := sd(y),
-    by = list(x, z)]
-d1 <- unique(subset(dt1, select = -c(2)))
-
-p2 <- ggplot(d1,
+# Lineplot----
+p1 <- ggplot(dt1,
              aes(x = x,
                  y = mu,
-                 colour = z,
-                 group = z)) +
+                 color = grp,
+                 fill = z,
+                 group = grp)) +
   facet_wrap(~ z,
-             ncol = 1) +
-  geom_line(position = position_dodge(0.3),
-            size = 1) +
-  geom_point(position = position_dodge(0.3),
-             size = 3) +
+             ncol = 2) +
   geom_errorbar(aes(ymax = mu - std,
                     ymin = mu + std),
                 width =.4,
-                size = 1,
-                position = position_dodge(0.3)) +
-  theme(legend.position = "top",
-        axis.text.x = element_text(angle = 45,
-                                   hjust = 1)) +
+                size = 0.5,
+                position = position_dodge(0.3),
+                col = "black") +
+  geom_line(position = position_dodge(0.3),
+            size = 1) +
+  geom_point(size = 3,
+             alpha = 0.9,
+             shape = 21,
+             position = position_dodge(0.3)) +
   scale_x_continuous("X") +
   scale_y_continuous("Mean(Y)") +
-  ggtitle("Two-factor Errorbar Plot") +
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.position = "left",
+        axis.text.x = element_text(angle = 45,
+                                   hjust = 1)) + 
+  ggtitle("Two-Factor Error Bar Plot") +
   guides(fill = guide_legend(title = "Treatment",
                              title.position = "top",
-                             nrow = 1))
-plot(p2)
+                             ncol = 1),
+         colour = guide_legend(title = "Side",
+                               title.position = "top",
+                               ncol = 1))
+plot(p1)
 
 # Save the plot as a TIFF file
 # tiff(filename = "tmp/boxplot.tiff",

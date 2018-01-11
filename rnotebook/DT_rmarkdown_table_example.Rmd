@@ -1,0 +1,34 @@
+---
+title: "DT Table Example"
+output: 
+  html_notebook:
+    toc: true
+    number_sections: false
+    theme: united
+    highlight: tango
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,comment = NA, echo=FALSE,message= FALSE, warning = FALSE)
+```
+**Turn off the 'fillContainer' option**
+```{r echo=FALSE, message=FALSE,warning = FALSE}
+cwater<-matrix(rbinom(10*100, 1, .5), ncol=10)
+
+library("knitr","xtable", quietly = TRUE)
+library(DT, quietly = TRUE)
+datatable(cwater,
+          caption = 'Table 1: This is a searchable table of the water content.',
+          class = 'cell-border stripe', 
+          filter = 'top',
+          extensions = 'Buttons',
+          fillContainer = FALSE, 
+          options = list(pageLength = 10, 
+                         autoWidth = TRUE,
+                         dom = 'Bfrtip',
+                         buttons = c('copy', 
+                                     'print'), 
+                         scrollX = TRUE, 
+            selection="multiple"
+          ))
+```

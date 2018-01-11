@@ -28,32 +28,32 @@ dt1 <- data.table(read = factor(paste("Reading",
                   id = factor(paste("Animal",
                                     rep(1:n.animal, n.read*n.trt))),
                   readout = rnorm(n.animal*n.trt*n.read))
-print(dt1)
+dt1
 
 # Plot----
 p1 <- ggplot(data = dt1) +
-  scale_x_discrete("Treatment") + 
-  scale_y_continuous("Readout") + 
-  ggtitle("Boxplot") +
   facet_wrap(~ read,
              nrow = 1) +
   geom_boxplot(aes(x = trt,
                    y = readout)) +
+  geom_line(aes(x = trt,
+                y = readout,
+                group = id),
+            size = 1,
+            position = position_dodge(0.3)) + 
   geom_point(aes(x = trt,
                  y = readout,
                  group = id,
-                 colour = id),
+                 fill = id),
              size = 3,
              alpha = 0.6,
+             shape = 21,
              position = position_dodge(0.3)) + 
-  geom_line(aes(x = trt,
-                y = readout,
-                group = id,
-                colour = id),
-            size = 2,
-            alpha = 0.6,
-            position = position_dodge(0.3)) + 
-  guides(colour = guide_legend(title = "ID",
+  scale_x_discrete("Treatment") + 
+  scale_y_continuous("Readout") + 
+  # scale_fill_discrete("Animal ID") + # alternative to "guides" option below
+  ggtitle("Boxplot") +
+  guides(colour = guide_legend(title = "Animal ID",
                                title.position = "top",
                                ncol = 1)) +
   theme(plot.title = element_text(hjust = 0.5),
