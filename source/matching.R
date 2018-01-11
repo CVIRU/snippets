@@ -17,9 +17,8 @@ d1 <- match.data
 rm(match.data)
 gc()
 
-#######################################################
-# Step1: copmute Propensity Scores, 
-# i.e. propensity of each subject for having Condition A
+# Step1: compute propensity scores---- 
+# i.e. propensity of each subject for having Condition B
 # NOTE: include Condition A as a covariate
 d1$ID <- factor(d1$ID, levels = unique(d1$ID))
 m1 <- glmer(CondB ~ CondA + Diag1 + Diag2 + Diag3 + Diag4 + Diag5 + (1|ID),
@@ -28,7 +27,8 @@ m1 <- glmer(CondB ~ CondA + Diag1 + Diag2 + Diag3 + Diag4 + Diag5 + (1|ID),
 summary(m1)
 
 # Predicted odd ratios for Condition A
-pp <- predict(m1, type = "response")
+pp <- predict(m1,
+              type = "response")
 summary(pp)
 hist(pp, 20)
 
@@ -101,7 +101,8 @@ summary(cases)
 #######################################################
 # Step4: additional calculations for controls
 # a. Date of first admission for any condition except Condition A (between 2000 and 2010)
-ctrl.all[, FirstAdm := min(Date[Date > "1999-12-31" & Date < "2011-01-01"]),
+ctrl.all[, FirstAdm := min(Date[Date > "1999-12-31" & 
+                                  Date < "2011-01-01"]),
          by = ID]
 # NOTE: some controls might not have any admisions between 2000 and 2010
 # Remove them
@@ -117,11 +118,11 @@ ctrl.all$AdmYear <-  as.numeric(format(ctrl.all$Date, "%Y"))
 
 #######################################################
 # Step5:
-# a. suffle and randomly select a case and match him/her to controls
+# a. shuffle and randomly select a case and match him/her to controls
 cases <- cases[sample(1:nrow(cases), 
                       nrow(cases),
                       replace = FALSE), ]
-i = 1
+i = 4
 case.i <- cases[i, ]
 case.i
 
@@ -138,7 +139,7 @@ case.i
 ctrl.pool
 
 # c. Select a control at random from the pool
-ctrl.id <- sample(unique(ctrl.pool$ID), 1)
+ctrl.id <- as.character(sample(unique(ctrl.pool$ID), 1))
 ctrl.id
 
 # FINISH THIS CODE!

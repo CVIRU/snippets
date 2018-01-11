@@ -1,17 +1,17 @@
 ---
-title: "Survival Curves Using Ggplot2 Package"
-author: Davit Sargsyan, Javier Cabrera
-date: 02/04/2017
+title: "Fit Mixed Effect Models"
+author: Davit Sargsyan
+date: 10/03/2017
 output: html_notebook
 ---
 
-This is an example of using *ggplot2* to draw survival curves.
+This is an example of using *lme4* and *glmmMBDM* packages for analysis of repeated measure datasets.
 
 ```{r Data, echo=TRUE, message=FALSE, warning=FALSE}
 # Load packages----
 require(data.table)
-require(survival)
-require(ggplot2)
+require(lme4)
+
 
 # Data----
 # Setumber of observations
