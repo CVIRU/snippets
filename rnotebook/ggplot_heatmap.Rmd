@@ -1,15 +1,16 @@
 ---
-title: "Heatmap Using Ggplot2 Package"
+title: "Heatmap Using <b><i>ggplot2</i></b> Package"
 author: Davit Sargsyan
 date: 08/12/2017
 output: html_notebook
 ---
 These are examples of creating heatmaps with *ggplot2* package. For more examples on constructing heatmaps, see my answer on Stack Overflow [my answer on Stack Overflow](https://stackoverflow.com/questions/34301152/creating-heatmap-graph-in-r/34302517#34302517)
 
-```{r, echo=TRUE, message=FALSE, warning=FALSE}
+```{r Data, echo=TRUE, message=FALSE, warning=FALSE}
 # Load packages----
 require(data.table)
 require(ggplot2)
+require(ggdendro)
 
 set.seed(100)
 
@@ -29,9 +30,11 @@ dt1 <- data.table(rowVar = factor(paste("Row",
                                                n.row*n.col,
                                                replace = TRUE))),
                   valVar = rnorm(n.row*n.col))
-print(dt1)
+head(dt1)
+```
 
-# Plot heatmap----
+```{r RectHitmap, echo=TRUE, message=FALSE, warning=FALSE}
+# Plot rectangular heatmap----
 p1 <- ggplot(data = dt1) +
   geom_tile(aes(x =  colVar,
                 y = rowVar,
@@ -88,4 +91,86 @@ print(p2)
 #      compression = "lzw+p")
 # print(p1)
 # graphics.off()
+```
+
+If the table is long and narrow, a more compact way to present the data is to make the table into a round shape, i.e. donut.
+
+```{r DonutData, echo=TRUE, message=FALSE, warning=FALSE}
+# Data----
+n.row <- 100
+
+dt2 <- data.frame(`ColumnA` = rnorm(n.row),
+                  `ColumnB` = rnorm(n.row))
+rownames(dt2) <- paste("Row",
+                       1:n.row,
+                       sep = "")
+head(dt2)
+```
+
+```{r DonutHitmap, echo=TRUE, message=FALSE, warning=FALSE, fig.width=15,fig.length=15}
+# Compute distances between colNamess----
+sampleDists <- dist(dt2)
+
+# Example of the plot using library 'ape'----
+plot(ape::as.phylo(x = hclust(sampleDists)),
+     type = "fan")
+
+# Make dendrogram data----
+dhc <- as.dendrogram(hclust(d = sampleDists),
+                     horiz = TRUE)
+ddata <- dendro_data(dhc, 
+                     type = "rectangle")
+
+# Segment data----
+dtp1 <- segment(ddata)
+
+# Hitmap data----
+dtp2 <- melt.data.table(data.table(rowNames = rownames(dt2),
+                                   dt2),
+                        id.vars = 1,
+                        measure.vars = 2:3,
+                        variable.name = "colNames")
+dtp2$rowNames <- factor(dtp2$rowNames,
+                        levels = ddata$labels$label)
+
+
+p1 <- ggplot(data = dtp2) +
+  coord_polar("y",
+              start = 0,
+              direction = -1) +
+  geom_tile(aes(x =  as.numeric(colNames),
+                y = rowNames, 
+                fill = value),
+            color = "white") +
+  geom_text(data = dtp2[colNames == "ColumnA", ],
+            aes(x = rep(1.75,
+                        nlevels(rowNames)),
+                y = rowNames,
+                angle = 90 + seq(from = 0,
+                                 to = 360,
+                                 length.out = nlevels(rowNames))[as.numeric(rowNames)],
+                label = unique(rowNames)),
+            hjust = 0) +
+  scale_fill_gradient2(low = "red", 
+                       high = "green", 
+                       mid = "grey", 
+                       midpoint = 0, 
+                       name = "Legend") +
+  scale_y_discrete("",
+                   expand = c(0, 0)) +
+  ggtitle("Donut Hitmap with Dendrogram") + 
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  geom_segment(data = dtp1,
+               aes(x = -sqrt(y) + 1.5,
+                   y = x, 
+                   xend = -sqrt(yend) + 1.5,
+                   yend = xend),
+               size = 1) 
+print(p1)
 ```
