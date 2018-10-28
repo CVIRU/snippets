@@ -93,6 +93,70 @@ print(p2)
 # graphics.off()
 ```
 
+Plot correlation of columns:
+
+```{r CorrHitmap, echo=TRUE, message=FALSE, warning=FALSE}
+dt2 <- dcast.data.table(data = dt1,
+                        rowVar ~ colVar,
+                        value.var = "valVar")
+cor1 <- cor(dt2[, -1])
+heatmap(cor1,
+        col = rev(heat.colors(10)))
+
+# Make dendrogram data----
+dhc <- as.dendrogram(hclust(d = as.dist(cor1 + 1)),
+                     horiz = TRUE)
+ddata <- dendro_data(dhc, 
+                     type = "rectangle")
+
+# Segment data----
+dtp1 <- segment(ddata)
+# Hitmap data----
+dtp2 <- melt.data.table(data.table(rowNames = rownames(cor1),
+                                   cor1),
+                        id.vars = 1,
+                        measure.vars = 2:(ncol(cor1) + 1),
+                        variable.name = "colNames")
+dtp2$rowNames <- factor(dtp2$rowNames,
+                        levels = ddata$labels$label)
+dtp2$colNames <- factor(dtp2$colNames,
+                        levels = ddata$labels$label)
+p1 <- ggplot(data = dtp2) +
+  # Y-axis dendrogram
+  geom_segment(data = dtp1,
+               aes(x = 2*y + 8,
+                   y = x, 
+                   xend = 2*yend + 8,
+                   yend = xend),
+               size = 1) +
+  # X-axis dendrogram
+  geom_segment(data = dtp1,
+               aes(x = x,
+                   y = 2*y + 8, 
+                   xend = xend,
+                   yend = 2*yend + 8),
+               size = 1) +
+  geom_tile(aes(x =  colNames,
+                y = rowNames, 
+                fill = value),
+            color = "white") +
+  scale_fill_gradient2(low = "red", 
+                       high = "green", 
+                       mid = "grey", 
+                       midpoint = 0, 
+                       name = "Correlation",
+                       limits = c(-1, 1)) +
+  scale_x_discrete("",
+                   expand = c(0, 0)) +
+  scale_y_discrete("",
+                   expand = c(0, 0)) +
+  ggtitle("") + 
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 45,
+                                   hjust = 1))
+print(p1)
+```
+
 If the table is long and narrow, a more compact way to present the data is to make the table into a round shape, i.e. donut.
 
 ```{r DonutData, echo=TRUE, message=FALSE, warning=FALSE}
