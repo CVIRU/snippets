@@ -1,8 +1,10 @@
 ---
 title: "Heatmap Using <b><i>ggplot2</i></b> Package"
-author: Davit Sargsyan
-date: 08/12/2017
-output: html_notebook
+author: "Davit Sargsyan"
+date: "08/12/2017"
+output:
+  html_document:
+    df_print: paged
 ---
 These are examples of creating heatmaps with *ggplot2* package. For more examples on constructing heatmaps, see my answer on Stack Overflow [my answer on Stack Overflow](https://stackoverflow.com/questions/34301152/creating-heatmap-graph-in-r/34302517#34302517)
 
