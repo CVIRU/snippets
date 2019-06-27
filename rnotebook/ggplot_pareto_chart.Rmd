@@ -1,0 +1,90 @@
+---
+title: "Pareto Chart Using Ggplot2 Package"
+author: Davit Sargsyan
+date: 06/27/2019
+output:
+  html_notebook:
+    toc: yes
+    toc_float: yes
+---
+
+This is an example of using *ggplot2* to draw Pareto chart.
+
+# Load packages
+```{r header, echo = TRUE, message = FALSE, warning = FALSE, error = FALSE}
+require(data.table)
+require(DT)
+require(ggplot2)
+require(scales)
+```
+
+# Simulate data
+```{r data, echo = TRUE, message = FALSE, warning = FALSE, error = FALSE}
+N <- 10
+dt1 <- data.table(x = LETTERS[1:N],
+                  y1 = 10^(1/(1:N)))
+dt1[, y1 := 100*y1/sum(y1)]
+dt1[, y2 := 100*cumsum(y1)/sum(y1)]
+datatable(dt1,
+          rownames = FALSE,
+          class = "cell-border stripe",
+          options = list(pageLength = N)) %>%
+    formatRound(columns = 2:3, 
+                digits = 2)
+```
+
+# Plot Pareto Chart
+```{r plot, fig.height = 5, fig.width = 8}
+p1 <- ggplot(dt1,
+             aes(x = x,
+                 y = y1)) +
+  geom_bar(stat = "identity",
+           fill = "grey",
+           color = "black") +
+  geom_line(aes(y = rescale(y2,
+                            to = c(min(y2)*max(y1)/100,
+                                   max(y1))),
+                group = rep(1, nrow(dt1)))) +
+  geom_point(aes(y = rescale(y2,
+                             to = c(min(y2)*max(y1)/100,
+                                    max(y1))))) +
+  scale_y_continuous("y1 (% of total)",
+                     breaks = seq(from = 0, 
+                                  to = max(dt1$y1), 
+                                  by = 5),
+                     labels = paste(seq(from = 0, 
+                                        to = max(dt1$y1), 
+                                        by = 5),
+                                    "%",
+                                    sep = ""),
+                     sec.axis = sec_axis(trans = ~.,
+                                         name = "y2 (% cumulative)",
+                                         breaks = seq(from = 0,
+                                                      to = max(dt1$y1), 
+                                                      length.out = 5),
+                                         labels = paste(seq(from = 0, 
+                                                            to = 100, 
+                                                            length.out = 5),
+                                                        "%",
+                                                        sep = ""))) +
+  theme(axis.text.x = element_text(angle = 90,
+                                   hjust = 1))
+
+# # Save as a TIFF file
+# tiff(filename = "tmp/pareto_chart.tiff",
+#      height = 5,
+#      width = 8,
+#      units = 'in',
+#      res = 600,
+#      compression = "lzw+p")
+# print(p1)
+# graphics.off()
+
+print(p1)
+```
+
+# Session Information
+```{r session}
+sessionInfo()
+```
+
